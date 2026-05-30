@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget buildHeader() {
+Widget buildHeader({VoidCallback? onClosePressed}) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
 
@@ -41,7 +41,11 @@ Widget buildHeader() {
           ),
         ),
         const SizedBox(width: 10),
-        const Icon(Icons.close),
+        IconButton(
+          tooltip: 'Close',
+          onPressed: onClosePressed,
+          icon: const Icon(Icons.close),
+        ),
       ],
     ),
   );
