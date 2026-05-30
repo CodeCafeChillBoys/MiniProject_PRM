@@ -38,7 +38,6 @@ class StepCard extends StatelessWidget {
             ),
             child: Icon(icon, color: const Color(0xffC51D1D), size: 30),
           ),
-
           const SizedBox(height: 10),
 
           /// STEP TEXT
