@@ -14,7 +14,11 @@ class HowToPlayScreen extends StatelessWidget {
         child: Column(
           children: [
             /// HEADER
-            buildHeader(),
+            buildHeader(
+              onClosePressed: () {
+                Navigator.pop(context);
+              },
+            ),
 
             /// line
             Container(height: 3, color: const Color(0xff3B1F1F)),
