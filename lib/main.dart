@@ -1,37 +1,23 @@
 import 'package:flutter/material.dart';
+import 'screens/login_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProRacerApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ProRacerApp extends StatelessWidget {
+  const ProRacerApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Pro Racer Simulations',
       debugShowCheckedModeBanner: false,
-      title: 'Giao diện đầu tiên',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
+        fontFamily: 'Roboto', // Bạn có thể tùy biến Font thể thao sau này
       ),
-      home: const MyLayoutScreen(), // Gọi trang giao diện của bạn ở đây
-    );
-  }
-}
-
-class MyLayoutScreen extends StatelessWidget {
-  const MyLayoutScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Thiết kế Layout'),
-      ),
-      body: const Center(
-        child: Text('Bắt đầu code giao diện tại đây!'),
-      ),
+      home: const LoginScreen(), // Điểm khởi chạy ứng dụng
     );
   }
 }
