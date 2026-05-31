@@ -4,6 +4,7 @@ import 'dart:async';
 import '../models/racer.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/moving_background.dart';
+import 'result_screen.dart';
 
 class RaceScreen extends StatefulWidget {
   final List<Racer> racers;
@@ -88,6 +89,21 @@ class _RaceScreenState extends State<RaceScreen> {
         setState(() {
           racePhase = 3; 
         });
+
+        final winner = widget.racers.reduce(
+          (a, b) => a.timeToFinish <= b.timeToFinish ? a : b,
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultScreen(
+              racers: widget.racers,
+              totalMoney: widget.totalMoney,
+              winner: winner,
+            ),
+          ),
+        );
       }
     });
   }
