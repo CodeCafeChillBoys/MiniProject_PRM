@@ -302,7 +302,7 @@ class ResultScreen extends StatelessWidget {
       width: double.infinity,
       height: 48,
       child: ElevatedButton(
-        onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
+        onPressed: () => Navigator.pop(context, _newBalance),
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xffC51D1D),
           foregroundColor: Colors.white,
@@ -325,7 +325,7 @@ class ResultScreen extends StatelessWidget {
       width: double.infinity,
       height: 44,
       child: OutlinedButton.icon(
-        onPressed: () => Navigator.popUntil(context, (route) => route.isFirst),
+        onPressed: () => Navigator.pop(context, _newBalance),
         icon: const Icon(Icons.home, size: 18),
         label: const Text(
           'BACK TO HOME',

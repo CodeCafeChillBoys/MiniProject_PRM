@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return racers.fold(0, (sum, item) => sum + item.betAmount);
   }
 
-  void _startRace() {
+  Future<void> _startRace() async {
     int currentTotalBet = _totalBet;
 
     if (currentTotalBet == 0) {
@@ -57,13 +57,22 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     // Chuyển sang màn hình đua, truyền danh sách xe và tổng tiền sang
-    Navigator.push(
+    final newBalance = await Navigator.push<int>(
       context,
       MaterialPageRoute(
         builder: (context) =>
             RaceScreen(racers: racers, totalMoney: totalMoney),
       ),
     );
+
+    if (newBalance != null) {
+      setState(() {
+        totalMoney = newBalance;
+        for (final racer in racers) {
+          racer.betAmount = 0;
+        }
+      });
+    }
   }
 
   @override
