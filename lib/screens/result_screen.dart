@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../models/racer.dart';
 import '../widgets/top_bar.dart';
+import '../widgets/sfx_button.dart';
+import '../utils/audio_service.dart';
 
-class ResultScreen extends StatelessWidget {
+class ResultScreen extends StatefulWidget {
   final List<Racer> racers;
   final int totalMoney;
   final Racer winner;
@@ -14,6 +16,21 @@ class ResultScreen extends StatelessWidget {
     required this.totalMoney,
     required this.winner,
   });
+
+  @override
+  State<ResultScreen> createState() => _ResultScreenState();
+}
+
+class _ResultScreenState extends State<ResultScreen> {
+  List<Racer> get racers => widget.racers;
+  Racer get winner => widget.winner;
+  int get totalMoney => widget.totalMoney;
+
+  @override
+  void initState() {
+    super.initState();
+    AudioService.instance.startBgmLoop();
+  }
 
   int _moneyChangeOf(Racer racer) {
     if (racer.id == winner.id) {
@@ -301,8 +318,11 @@ class ResultScreen extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 48,
-      child: ElevatedButton(
-        onPressed: () => Navigator.pop(context, _newBalance),
+      child: SfxElevatedButton(
+        onPressed: () {
+          Navigator.pop(context, _newBalance);
+          AudioService.instance.playSfx('click.wav', volume: 0.6);
+        },
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xffC51D1D),
           foregroundColor: Colors.white,
@@ -324,16 +344,25 @@ class ResultScreen extends StatelessWidget {
     return SizedBox(
       width: double.infinity,
       height: 44,
-      child: OutlinedButton.icon(
-        onPressed: () => Navigator.pop(context, _newBalance),
-        icon: const Icon(Icons.home, size: 18),
-        label: const Text(
-          'BACK TO HOME',
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w900,
-            fontStyle: FontStyle.italic,
-          ),
+      child: SfxOutlinedButton(
+        onPressed: () {
+          Navigator.pop(context, _newBalance);
+          AudioService.instance.playSfx('click.wav', volume: 0.6);
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.home, size: 18),
+            SizedBox(width: 8),
+            Text(
+              'BACK TO HOME',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ],
         ),
         style: OutlinedButton.styleFrom(
           foregroundColor: const Color(0xff3B1F1F),

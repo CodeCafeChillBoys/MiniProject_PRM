@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'sfx_button.dart';
 
 Widget buildHeader({required int totalMoney, VoidCallback? onClosePressed}) {
   return Container(
@@ -44,7 +45,7 @@ Widget buildHeader({required int totalMoney, VoidCallback? onClosePressed}) {
           ),
         ),
         const SizedBox(width: 10),
-        IconButton(
+        SfxIconButton(
           tooltip: 'Close',
           onPressed: onClosePressed,
           icon: const Icon(Icons.close),
