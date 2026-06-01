@@ -69,13 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await AudioService.instance.stopBgm();
     await AudioService.instance.playSfx('race_rev.wav');
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>
-            RaceScreen(racers: racers, totalMoney: totalMoney),
-      ),
-    );
     final newBalance = await Navigator.push<int>(
       context,
       MaterialPageRoute(
@@ -112,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const HowToPlayScreen(),
+                  builder: (context) => HowToPlayScreen(totalMoney: totalMoney),
                 ),
               );
             },

@@ -3,7 +3,9 @@ import 'package:miniproject/widgets/buildHeader.dart';
 import 'package:miniproject/widgets/step_card.dart';
 
 class HowToPlayScreen extends StatelessWidget {
-  const HowToPlayScreen({super.key});
+  final int totalMoney;
+
+  const HowToPlayScreen({super.key, required this.totalMoney});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +17,7 @@ class HowToPlayScreen extends StatelessWidget {
           children: [
             /// HEADER
             buildHeader(
+              totalMoney: totalMoney,
               onClosePressed: () {
                 Navigator.pop(context);
               },
