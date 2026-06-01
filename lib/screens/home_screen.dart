@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/racer.dart';
+import '../utils/audio_service.dart';
 import 'howToPlay_screen.dart';
 import 'race_screen.dart';
 
@@ -23,6 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       racer.betAmount += 10;
     });
+    // Play coin / bet sound (generated: `coin_leng_keng.wav` in `assets/sounds/`)
+    AudioService.instance.playSfx('coin_leng_keng.wav');
   }
 
   void _decreaseBet(Racer racer) {
@@ -30,6 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         racer.betAmount -= 10;
       });
+      // Play coin sound when decreasing bet
+      AudioService.instance.playSfx('coin_leng_keng.wav');
     }
   }
 
@@ -37,7 +42,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return racers.fold(0, (sum, item) => sum + item.betAmount);
   }
 
-  void _startRace() {
+  @override
+  void initState() {
+    super.initState();
+    AudioService.instance.startBgmLoop();
+  }
+
+  Future<void> _startRace() async {
     int currentTotalBet = _totalBet;
 
     if (currentTotalBet == 0) {
@@ -56,7 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // Chuyển sang màn hình đua, truyền danh sách xe và tổng tiền sang
+    await AudioService.instance.stopBgm();
+    await AudioService.instance.playSfx('race_rev.wav');
     Navigator.push(
       context,
       MaterialPageRoute(
