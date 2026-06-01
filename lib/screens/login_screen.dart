@@ -3,6 +3,7 @@ import '../utils/auth_service.dart';
 import 'register_screen.dart';
 import '../utils/audio_service.dart';
 import 'home_screen.dart';
+import '../widgets/sfx_button.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -189,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: double.infinity,
                       height: 55,
-                      child: ElevatedButton(
+                      child: SfxElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFFB71C1C),
                           shape: const RoundedRectangleBorder(),
@@ -218,6 +219,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Center(
                       child: TextButton(
                         onPressed: () async {
+                          AudioService.instance.playSfx('click.wav', volume: 0.6);
                           if (!mounted) return;
                           await Navigator.push(
                             context,

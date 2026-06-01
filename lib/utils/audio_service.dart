@@ -18,6 +18,7 @@ class AudioService {
     await playLoopingSound(assetPath, volume: volume);
   }
 
+  // Phát ấm thanh vòng lặp vô hạn
   Future<void> playLoopingSound(String fileName, {double volume = 0.3}) async {
     try {
       final assetPath = fileName.startsWith('sounds/')
@@ -51,6 +52,7 @@ class AudioService {
     }
   }
 
+  // Dùng cho tiếng âm thanh ngắn (click, coin, leng keng, thắng game,...).
   Future<void> playSfx(String fileName, {double volume = 1.0}) async {
     try {
       // Try loading asset bytes and play from memory (more reliable cross-platform).
