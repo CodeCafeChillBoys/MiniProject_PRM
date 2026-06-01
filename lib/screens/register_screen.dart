@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/audio_service.dart';
 import '../models/user_model.dart';
 import '../utils/auth_service.dart';
 
@@ -15,8 +16,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final _authService = AuthService();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await AudioService.instance.startBgmLoop(
+        assetPath: 'sounds/VINACHAMP.mp3',
+        volume: 0.6,
+      );
+    });
+  }
 
-  void _handleRegister() async {
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    // shared AudioService not disposed here
+    super.dispose();
+  }
+
+  Future<void> _handleRegister() async {
     String name = _nameController.text.trim();
     String email = _emailController.text.trim();
     String password = _passwordController.text;
@@ -42,7 +63,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     bool isSuccess = await _authService.register(newRacer);
     if (isSuccess) {
       _showSnackBar("Tạo tài khoản thành công!", isSuccess: true);
-      if (mounted) Navigator.pop(context); // Quay lại màn hình đăng nhập
+      if (mounted) {
+        Navigator.pop(context);
+      }
     } else {
       _showSnackBar("Email này đã được đăng ký trước đó!");
     }
@@ -50,7 +73,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _showSnackBar(String message, {bool isSuccess = false}) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: isSuccess ? Colors.green : const Color(0xFFB71C1C)),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isSuccess ? Colors.green : const Color(0xFFB71C1C),
+      ),
     );
   }
 
@@ -67,11 +93,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           children: [
-            const Text("JOIN THE GRID", style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic, color: Color(0xFF1E1E1E))),
+            const SizedBox(height: 10),
+            const Text(
+              "JOIN THE GRID",
+              style: TextStyle(
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+                fontStyle: FontStyle.italic,
+                color: Color(0xFF1E1E1E),
+              ),
+            ),
             const SizedBox(height: 8),
-            const Text("Complete your profile to start racing.", style: TextStyle(color: Colors.grey)),
+            const Text(
+              "Complete your profile to start racing.",
+              style: TextStyle(color: Colors.grey),
+            ),
             const SizedBox(height: 25),
-
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -81,40 +118,60 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("FULL NAME", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  const Text(
+                    "FULL NAME",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _nameController,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "John 'Turbo' Doe"),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "John 'Turbo' Doe",
+                    ),
                   ),
                   const SizedBox(height: 20),
-
-                  const Text("EMAIL ADDRESS", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  const Text(
+                    "EMAIL ADDRESS",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _emailController,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "racer@circuit.com"),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "racer@circuit.com",
+                    ),
                   ),
                   const SizedBox(height: 20),
-
-                  const Text("PASSWORD", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  const Text(
+                    "PASSWORD",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "••••••••"),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "••••••••",
+                    ),
                   ),
                   const SizedBox(height: 20),
-
-                  const Text("CONFIRM PASSWORD", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                  const Text(
+                    "CONFIRM PASSWORD",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
                   const SizedBox(height: 8),
                   TextField(
                     controller: _confirmPasswordController,
                     obscureText: true,
-                    decoration: const InputDecoration(border: OutlineInputBorder(), hintText: "••••••••"),
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "••••••••",
+                    ),
                   ),
                   const SizedBox(height: 25),
-
                   SizedBox(
                     width: double.infinity,
                     height: 55,
@@ -123,8 +180,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         backgroundColor: const Color(0xFFB71C1C),
                         shape: const RoundedRectangleBorder(),
                       ),
-                      onPressed: _handleRegister,
-                      child: const Text("CREATE ACCOUNT", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, fontStyle: FontStyle.italic)),
+                      onPressed: () async {
+                        await AudioService.instance.playSfx("click.mp3");
+                        await _handleRegister();
+                      },
+                      child: const Text(
+                        "CREATE ACCOUNT",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
                     ),
                   ),
                 ],

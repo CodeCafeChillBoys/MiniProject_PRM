@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
 import '../models/racer.dart';
+import '../utils/audio_service.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/moving_background.dart';
 import 'result_screen.dart';
@@ -41,6 +42,9 @@ class _RaceScreenState extends State<RaceScreen> {
         _startPhase1();
       }
     });
+
+    // Play looped race background while the race screen is active.
+    AudioService.instance.playLoopingSound('race_rev.wav', volume: 0.35);
   }
 
   void _startPhase1() {
@@ -88,6 +92,8 @@ class _RaceScreenState extends State<RaceScreen> {
           racePhase = 3;
         });
 
+        AudioService.instance.stopBgm();
+
         final winner = widget.racers.reduce(
           (a, b) => a.timeToFinish <= b.timeToFinish ? a : b,
         );
@@ -113,6 +119,7 @@ class _RaceScreenState extends State<RaceScreen> {
   @override
   void dispose() {
     _jostleTimer?.cancel();
+    AudioService.instance.stopBgm();
     super.dispose();
   }
 

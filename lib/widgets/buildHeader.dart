@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget buildHeader({VoidCallback? onClosePressed}) {
+Widget buildHeader({required int totalMoney, VoidCallback? onClosePressed}) {
   return Container(
     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
 
@@ -33,10 +33,13 @@ Widget buildHeader({VoidCallback? onClosePressed}) {
             border: Border.all(color: Colors.brown, width: 2),
           ),
 
-          child: const Row(
+          child: Row(
             children: [
-              Icon(Icons.attach_money, size: 18),
-              Text("2,500", style: TextStyle(fontWeight: FontWeight.bold)),
+              const Icon(Icons.attach_money, size: 18),
+              Text(
+                '\$${totalMoney}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ],
           ),
         ),
