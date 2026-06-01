@@ -76,6 +76,22 @@ class _HomeScreenState extends State<HomeScreen> {
             RaceScreen(racers: racers, totalMoney: totalMoney),
       ),
     );
+    final newBalance = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            RaceScreen(racers: racers, totalMoney: totalMoney),
+      ),
+    );
+
+    if (newBalance != null) {
+      setState(() {
+        totalMoney = newBalance;
+        for (final racer in racers) {
+          racer.betAmount = 0;
+        }
+      });
+    }
   }
 
   @override

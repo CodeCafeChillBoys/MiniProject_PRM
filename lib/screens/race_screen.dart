@@ -5,6 +5,7 @@ import '../models/racer.dart';
 import '../utils/audio_service.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/moving_background.dart';
+import 'result_screen.dart';
 
 class RaceScreen extends StatefulWidget {
   final List<Racer> racers;
@@ -85,12 +86,32 @@ class _RaceScreenState extends State<RaceScreen> {
     int minTime = widget.racers.map((r) => r.timeToFinish).reduce(min);
 
     // Sau khi chiếc xe nhanh nhất cán đích, dừng nền cuộn
-    Future.delayed(Duration(milliseconds: minTime), () {
+    Future.delayed(Duration(milliseconds: minTime), () async {
       if (mounted) {
         setState(() {
           racePhase = 3;
         });
+
         AudioService.instance.stopBgm();
+
+        final winner = widget.racers.reduce(
+          (a, b) => a.timeToFinish <= b.timeToFinish ? a : b,
+        );
+
+        final newBalance = await Navigator.push<int>(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResultScreen(
+              racers: widget.racers,
+              totalMoney: widget.totalMoney,
+              winner: winner,
+            ),
+          ),
+        );
+
+        if (mounted && newBalance != null) {
+          Navigator.pop(context, newBalance);
+        }
       }
     });
   }
