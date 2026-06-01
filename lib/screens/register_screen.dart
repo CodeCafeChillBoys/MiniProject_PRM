@@ -21,7 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await AudioService.instance.startBgmLoop(
-        assetPath: 'sounds/VINACHAMP.mp3',
+        assetPath: 'sounds/login.wav',
         volume: 0.6,
       );
     });
