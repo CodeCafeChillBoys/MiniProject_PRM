@@ -3,6 +3,7 @@ import '../models/racer.dart';
 import '../utils/audio_service.dart';
 import 'howToPlay_screen.dart';
 import 'race_screen.dart';
+import '../widgets/sfx_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -68,7 +69,6 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     await AudioService.instance.stopBgm();
-    await AudioService.instance.playSfx('race_rev.wav');
     final newBalance = await Navigator.push<int>(
       context,
       MaterialPageRoute(
@@ -98,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.blue[800],
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
+          SfxIconButton(
             tooltip: 'How to play',
             icon: const Icon(Icons.help_outline),
             onPressed: () {
@@ -184,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             // Ô nhập/chọn tiền cược
                             Row(
                               children: [
-                                IconButton(
+                                SfxIconButton(
                                   onPressed: () => _decreaseBet(racer),
                                   icon: const Icon(
                                     Icons.remove_circle,
@@ -202,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 ),
-                                IconButton(
+                                SfxIconButton(
                                   onPressed: () => _increaseBet(racer),
                                   icon: const Icon(
                                     Icons.add_circle,
@@ -238,8 +238,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       width: double.infinity,
                       height: 50,
-                      child: ElevatedButton(
-                        onPressed: _startRace,
+                      child: SfxElevatedButton(
+                        onPressed: () {
+                          AudioService.instance.playSfx(
+                            'click.wav',
+                            volume: 0.6,
+                          );
+                          _startRace();
+                        },
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red[700],
                           foregroundColor: Colors.white,

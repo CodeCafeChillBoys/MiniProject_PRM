@@ -105,6 +105,8 @@ class _RaceScreenState extends State<RaceScreen> {
         });
 
         AudioService.instance.stopBgm();
+        // Phát hiệu ứng âm thanh kết quả (fanfare ngắn)
+        AudioService.instance.playSfx('race_result.wav', volume: 0.9);
 
         final winner = widget.racers.reduce(
           (a, b) => a.timeToFinish <= b.timeToFinish ? a : b,
@@ -132,7 +134,6 @@ class _RaceScreenState extends State<RaceScreen> {
   void dispose() {
     _countdownTimer?.cancel();
     _jostleTimer?.cancel();
-    AudioService.instance.stopBgm();
     super.dispose();
   }
 

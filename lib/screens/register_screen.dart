@@ -21,7 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await AudioService.instance.startBgmLoop(
-        assetPath: 'sounds/VINACHAMP.mp3',
+        assetPath: 'sounds/login.wav',
         volume: 0.6,
       );
     });
@@ -181,7 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         shape: const RoundedRectangleBorder(),
                       ),
                       onPressed: () async {
-                        await AudioService.instance.playSfx("click.mp3");
+                        AudioService.instance.playSfx('click.wav', volume: 0.6);
                         await _handleRegister();
                       },
                       child: const Text(
