@@ -30,6 +30,10 @@ class _RaceScreenState extends State<RaceScreen> {
   int _jostleSeconds = 0;
   final int _maxJostleSeconds = 8; // Kéo dài cuộc đua bằng 8 giây giằng co
 
+  void _playCountdownTick() {
+    AudioService.instance.playSfx('click.wav', volume: 1.0);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -40,12 +44,15 @@ class _RaceScreenState extends State<RaceScreen> {
     }
 
     // Bắt đầu đếm ngược 3 2 1
+    _playCountdownTick();
+
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!mounted) return;
       if (countdown > 1) {
         setState(() {
           countdown--;
         });
+        _playCountdownTick();
       } else {
         setState(() {
           countdown = 0;
@@ -200,7 +207,7 @@ class _RaceScreenState extends State<RaceScreen> {
                       );
                     }),
                   ),
-                  
+
                   // Hiển thị số đếm ngược khổng lồ giữa màn hình
                   if (countdown > 0)
                     Center(
