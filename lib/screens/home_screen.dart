@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/racer.dart';
+import '../utils/audio_service.dart';
 import 'howToPlay_screen.dart';
 import 'race_screen.dart';
+import '../widgets/sfx_button.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       racer.betAmount += 10;
     });
+    // Play coin / bet sound (generated: `coin_leng_keng.wav` in `assets/sounds/`)
+    AudioService.instance.playSfx('coin_leng_keng.wav');
   }
 
   void _decreaseBet(Racer racer) {
@@ -30,6 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         racer.betAmount -= 10;
       });
+      // Play coin sound when decreasing bet
+      AudioService.instance.playSfx('coin_leng_keng.wav');
     }
   }
 
@@ -37,7 +43,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return racers.fold(0, (sum, item) => sum + item.betAmount);
   }
 
-  void _startRace() {
+  @override
+  void initState() {
+    super.initState();
+    AudioService.instance.startBgmLoop();
+  }
+
+  Future<void> _startRace() async {
     int currentTotalBet = _totalBet;
 
     if (currentTotalBet == 0) {
@@ -56,14 +68,23 @@ class _HomeScreenState extends State<HomeScreen> {
       return;
     }
 
-    // Chuyển sang màn hình đua, truyền danh sách xe và tổng tiền sang
-    Navigator.push(
+    await AudioService.instance.stopBgm();
+    final newBalance = await Navigator.push<int>(
       context,
       MaterialPageRoute(
         builder: (context) =>
             RaceScreen(racers: racers, totalMoney: totalMoney),
       ),
     );
+
+    if (newBalance != null) {
+      setState(() {
+        totalMoney = newBalance;
+        for (final racer in racers) {
+          racer.betAmount = 0;
+        }
+      });
+    }
   }
 
   @override
@@ -77,14 +98,14 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.blue[800],
         foregroundColor: Colors.white,
         actions: [
-          IconButton(
+          SfxIconButton(
             tooltip: 'How to play',
             icon: const Icon(Icons.help_outline),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const HowToPlayScreen(),
+                  builder: (context) => HowToPlayScreen(totalMoney: totalMoney),
                 ),
               );
             },
@@ -163,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             // Ô nhập/chọn tiền cược
                             Row(
                               children: [
-                                IconButton(
+                                SfxIconButton(
                                   onPressed: () => _decreaseBet(racer),
                                   icon: const Icon(
                                     Icons.remove_circle,
@@ -181,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                   ),
                                 ),
-                                IconButton(
+                                SfxIconButton(
                                   onPressed: () => _increaseBet(racer),
                                   icon: const Icon(
                                     Icons.add_circle,
@@ -217,8 +238,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(
                       width: double.infinity,
                       height: 50,
-                      child: ElevatedButton(
-                        onPressed: _startRace,
+                      child: SfxElevatedButton(
+                        onPressed: () {
+                          AudioService.instance.playSfx(
+                            'click.wav',
+                            volume: 0.6,
+                          );
+                          _startRace();
+                        },
+
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red[700],
                           foregroundColor: Colors.white,
