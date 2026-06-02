@@ -5,6 +5,7 @@ import '../models/racer.dart';
 import '../utils/audio_service.dart';
 import '../widgets/top_bar.dart';
 import '../widgets/moving_background.dart';
+import '../widgets/finish_line.dart';
 import 'result_screen.dart';
 
 class RaceScreen extends StatefulWidget {
@@ -23,6 +24,8 @@ class _RaceScreenState extends State<RaceScreen> {
   double finishLine = 0.0;
   List<double> racerPositions = [20.0, 20.0, 20.0];
 
+  Timer? _countdownTimer;
+  int countdown = 3;
   Timer? _jostleTimer;
   int _jostleSeconds = 0;
   final int _maxJostleSeconds = 8; // Kéo dài cuộc đua bằng 8 giây giằng co
@@ -36,9 +39,18 @@ class _RaceScreenState extends State<RaceScreen> {
       racer.timeToFinish = random.nextInt(2000) + 2000;
     }
 
-    // Ngâm 1 giây sau đó bước vào Phase 1 (Giằng co)
-    Future.delayed(const Duration(milliseconds: 1000), () {
-      if (mounted) {
+    // Bắt đầu đếm ngược 3 2 1
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) return;
+      if (countdown > 1) {
+        setState(() {
+          countdown--;
+        });
+      } else {
+        setState(() {
+          countdown = 0;
+        });
+        _countdownTimer?.cancel();
         _startPhase1();
       }
     });
@@ -118,6 +130,7 @@ class _RaceScreenState extends State<RaceScreen> {
 
   @override
   void dispose() {
+    _countdownTimer?.cancel();
     _jostleTimer?.cancel();
     AudioService.instance.stopBgm();
     super.dispose();
@@ -139,45 +152,8 @@ class _RaceScreenState extends State<RaceScreen> {
             Expanded(
               child: Stack(
                 children: [
-                  // Vạch đích sọc ca rô trắng đen (vẽ trước để nằm dưới xe)
-                  Positioned(
-                    left: 0,
-                    right: 0,
-                    bottom: finishLine + 55, // Căn ngay mép đầu xe khi cán đích
-                    height: 40, // Chiều cao vạch đích
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: List.generate(
-                              24,
-                              (i) => Expanded(
-                                child: Container(
-                                  color: i % 2 == 0
-                                      ? Colors.white
-                                      : Colors.black,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Row(
-                            children: List.generate(
-                              24,
-                              (i) => Expanded(
-                                child: Container(
-                                  color: i % 2 == 0
-                                      ? Colors.black
-                                      : Colors.white,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // Vạch đích sọc ca rô trắng đen được tách ra file riêng
+                  FinishLine(bottomPosition: finishLine + 55),
 
                   Row(
                     children: List.generate(widget.racers.length, (index) {
@@ -223,6 +199,31 @@ class _RaceScreenState extends State<RaceScreen> {
                       );
                     }),
                   ),
+                  
+                  // Hiển thị số đếm ngược khổng lồ giữa màn hình
+                  if (countdown > 0)
+                    Center(
+                      child: Text(
+                        '$countdown',
+                        style: const TextStyle(
+                          fontSize: 120,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.yellow,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 10.0,
+                              color: Colors.black,
+                              offset: Offset(5, 5),
+                            ),
+                            Shadow(
+                              blurRadius: 20.0,
+                              color: Colors.red,
+                              offset: Offset(0, 0),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
